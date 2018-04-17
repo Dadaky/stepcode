@@ -198,6 +198,7 @@ extern SC_EXPRESS_EXPORT Hash_Table   HASHcreate PROTO( ( unsigned ) );
 extern SC_EXPRESS_EXPORT Hash_Table   HASHcopy PROTO( ( Hash_Table ) );
 extern SC_EXPRESS_EXPORT void HASHdestroy PROTO( ( Hash_Table ) );
 extern SC_EXPRESS_EXPORT Element  HASHsearch PROTO( ( Hash_Table, Element, Action ) );
+/* TODO: simplification - rename HASHlistinit_by_type and factor out existing HASHlistinit */
 extern SC_EXPRESS_EXPORT void HASHlistinit PROTO( ( Hash_Table, HashEntry * ) );
 extern SC_EXPRESS_EXPORT void HASHlistinit_by_type PROTO( ( Hash_Table, HashEntry *, char ) );
 extern SC_EXPRESS_EXPORT Element  HASHlist PROTO( ( HashEntry * ) );

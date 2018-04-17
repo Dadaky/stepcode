@@ -60,7 +60,7 @@ void SCOPE_get_entities( Scope scope, Linked_List result ) {
     DictionaryEntry de;
     Generic x;
 
-    DICTdo_type_init( scope->symbol_table, &de, OBJ_ENTITY );
+    DICTdo_init( scope->symbol_table, &de, OBJ_ENTITY );
     while( 0 != ( x = DICTdo( &de ) ) ) {
         LISTadd_last( result, x );
     }
@@ -73,7 +73,7 @@ void SCOPE_get_functions( Scope scope, Linked_List result ) {
     DictionaryEntry de;
     Generic x;
 
-    DICTdo_type_init( scope->symbol_table, &de, OBJ_FUNCTION );
+    DICTdo_init( scope->symbol_table, &de, OBJ_FUNCTION );
     while( 0 != ( x = DICTdo( &de ) ) ) {
         LISTadd_last( result, x );
     }
@@ -94,7 +94,7 @@ void SCOPE_get_rules( Scope scope, Linked_List result ) {
     DictionaryEntry de;
     Generic x;
 
-    DICTdo_type_init( scope->symbol_table, &de, OBJ_RULE );
+    DICTdo_init( scope->symbol_table, &de, OBJ_RULE );
     while( 0 != ( x = DICTdo( &de ) ) ) {
         LISTadd_last( result, x );
     }

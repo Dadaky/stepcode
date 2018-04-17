@@ -206,7 +206,7 @@ static void SCHEMA_get_entities_use( Scope scope, Linked_List result ) {
 
     /* partially USE'd schema */
     if( scope->u.schema->usedict ) {
-        DICTdo_init( scope->u.schema->usedict, &de );
+        DICTdo_init( scope->u.schema->usedict, &de, '*' );
         while( 0 != ( rename = ( Rename * )DICTdo( &de ) ) ) {
             LISTadd_last( result, rename->object );
         }
@@ -243,7 +243,7 @@ static void SCHEMA_get_entities_ref( Scope scope, Linked_List result ) {
     LISTod
 
     /* partially REF'd schema */
-    DICTdo_init( scope->u.schema->refdict, &de );
+    DICTdo_init( scope->u.schema->refdict, &de, '*' );
     while( 0 != ( rename = ( Rename * )DICTdo( &de ) ) ) {
         if( DICT_type == OBJ_ENTITY ) {
             LISTadd_last( result, rename->object );
