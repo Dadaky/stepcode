@@ -97,9 +97,8 @@ extern SC_EXPRESS_EXPORT char DICT_type;  /**< set as a side-effect of DICT look
 
 extern SC_EXPRESS_EXPORT void     DICTinitialize PROTO( ( void ) );
 extern SC_EXPRESS_EXPORT void     DICTcleanup PROTO( ( void ) );
-/* TODO: why is there DICT_define and DICTdefine? with the same signature and almost same name?! */
 extern SC_EXPRESS_EXPORT int      DICTdefine PROTO( ( Dictionary, char *, Generic, Symbol *, char ) );
-extern SC_EXPRESS_EXPORT int      DICT_define PROTO( ( Dictionary, char *, Generic, Symbol *, char ) );
+extern SC_EXPRESS_EXPORT int      DICTdefine_enum PROTO( ( Dictionary, char *, Generic, Symbol *, char ) );
 extern SC_EXPRESS_EXPORT void     DICTundefine PROTO( ( Dictionary, char * ) );
 /* TODO: could DICTlookup be implemented more generically using function pointers? */
 extern SC_EXPRESS_EXPORT Generic      DICTlookup PROTO( ( Dictionary, char * ) );
