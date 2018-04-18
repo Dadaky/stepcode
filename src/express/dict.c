@@ -47,7 +47,7 @@ void DICTprint( Dictionary dict ) {
     Element e;
     DictionaryEntry de;
 
-    HASHlistinit( dict, &de );
+    HASHlistinit( dict, &de, '*' );
 
     while( 0 != ( e = ( HASHlist( &de ) ) ) ) {
         fprintf( stderr, "key <%s>  data <%s>  line <%d>  <\"%c\" %s>  <%s>\n",
