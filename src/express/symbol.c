@@ -42,9 +42,10 @@ void SYMBOLinitialize( void ) {
     MEMinitialize( &SYMBOL_fl, sizeof( struct Symbol_ ), 100, 100 );
 }
 
-Symbol * SYMBOLcreate( char * name, int line, const char * filename ) {
+Symbol * SYMBOLcreate( char * name, int ref_typ, int line, const char * filename ) {
     Symbol * sym = SYMBOL_new();
     sym->name = name;
+    sym->ref_typ = ref_typ;
     sym->line = line;
     sym->filename = filename; /* NOTE this used the global 'current_filename',
                                * instead of 'filename'. This func is only
