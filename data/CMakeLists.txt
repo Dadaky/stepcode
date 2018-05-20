@@ -10,14 +10,14 @@
 # .exp file inside, which it uses. otherwise, ${path} is assumed to
 # be an express file.
 
-if(NOT "${SC_BUILD_SCHEMAS}" STREQUAL "")
+if(NOT ${SC_BUILD_EXPRESS_ONLY})
   include(${SC_CMAKE_DIR}/schema_scanner/schemaScanner.cmake)
   foreach(src ${SC_SDAI_ADDITIONAL_EXES_SRCS})
     get_filename_component(name ${src} NAME_WE)
     message(STATUS "Additional SDAI executable: ${name}")
   endforeach(src ${SC_SDAI_ADDITIONAL_EXES_SRCS})
 
-  if(SC_BUILD_SCHEMAS STREQUAL "ALL")
+  if(SC_BUILD_SCHEMAS STREQUAL "ALL" OR SC_BUILD_SCHEMAS STREQUAL "")
     file(GLOB_RECURSE SC_BUILD_SCHEMAS ${SC_SOURCE_DIR}/data/*.exp)
   endif()
   foreach(FILE ${SC_BUILD_SCHEMAS})
@@ -25,7 +25,7 @@ if(NOT "${SC_BUILD_SCHEMAS}" STREQUAL "")
     LOCATE_SCHEMA(${FILE} abspath)
     SCHEMA_CMLIST(${abspath})
   endforeach()
-endif(NOT "${SC_BUILD_SCHEMAS}" STREQUAL "")
+endif()
 
 # Local Variables:
 # tab-width: 8
