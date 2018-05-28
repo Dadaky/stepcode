@@ -40,21 +40,15 @@ add_custom_target(express_verify DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/express_ver
 # Depending on whether we're using pre-generated sources or building them on
 # the fly, set up targets and source lists.
 if(SC_GENERATE_LP_SOURCES)
-  LEMON_TARGET(ExpParser expparse.y)
-  PERPLEX_TARGET(ExpScanner expscan.l)
-  ADD_PERPLEX_LEMON_DEPENDENCY(ExpScanner ExpParser)
-  set(SCL_SO_SRCS
-    ${LEMON_ExpParser_SRC}
-    ${PERPLEX_ExpScanner_SRC}
-    )
-
-  LEMON_TARGET(ExpParser_static expparse.y)
-  PERPLEX_TARGET(ExpScanner_static expscan.l)
-  ADD_PERPLEX_LEMON_DEPENDENCY(ExpScanner_static ExpParser_static)
-  set(SCL_STATIC_SRCS
-    ${LEMON_ExpParser_static_SRC}
-    ${PERPLEX_ExpScanner_static_SRC}
-    )
+  LEMON_TARGET(ExpParser expparse.y expparse.c
+               COMPILE_FLAGS "-p -c"
+               DEFINES_FILE "expparse.h")
+  RE2C_TARGET(ExpScanner expscan.l expscan.c
+              COMPILE_FLAGS "-W -Wno-match-empty-string -r -c --tags"
+              DEFINES_FILE "expscan.h")
+  ADD_RE2C_LEMON_DEPENDENCY(ExpScanner ExpParser)
+  set(SCL_SO_SRCS ${LEMON_ExpParser_OUTPUTS} ${RE2C_ExpScanner_OUTPUTS})
+  set(SCL_STATIC_SRCS ${LEMON_ExpParser_OUTPUTS} ${RE2C_ExpScanner_OUTPUTS})
 else(SC_GENERATE_LP_SOURCES)
   include_directories(${CMAKE_CURRENT_SOURCE_DIR}/generated)
   set(EXPRESS_GENERATED_SRCS
@@ -88,7 +82,23 @@ set(EXPRESS_SOURCES
   ordered_attrs.cc
   info.c
   exp_kw.c
+  lexsupport.c
  )
+
+set(EXPRESS_OBJS)
+foreach(_src ${EXPRESS_SOURCES})
+    string(REPLACE "." "_" _suffix ${_src})
+    set(_objlib "objlib_${_suffix}")
+    add_library(${_objlib} OBJECT ${_src})
+    list(APPEND ${EXPRESS_OBJS} $<TARGET_OBJECTS:${_objlib}>)
+endforeach()
+
+foreach(_src ${SCL_SO_SRCS})
+    string(REPLACE "." "_" _suffix ${_src})
+    set(_objlib "objlib_${_suffix}")
+    add_library(${_objlib} OBJECT ${_src})
+    list(APPEND ${EXPRESS_OBJS} $<TARGET_OBJECTS:${_objlib}>)
+endforeach()
 
 # TODO
 # Currently, fedex.c provides the main() for multiple programs. These programs
@@ -107,16 +117,17 @@ set(CHECK_EXPRESS_SOURCES
 SET(EXPRESS_PRIVATE_HDRS
   exptoks.h
   stack.h
+  lexsupport.h
   )
+  
+add_library(express SHARED error.c ${EXPRESS_OBJS})
+target_link_libraries(express base auxlib)
 
-SC_ADDLIB(express "${EXPRESS_SOURCES}" "base" SO_SRCS "${SCL_SO_SRCS}" STATIC_SRCS "${SCL_STATIC_SRCS}")
 if(SC_GENERATE_LP_SOURCES)
-  set_property(TARGET express APPEND PROPERTY INCLUDE_DIRECTORIES "${PERPLEX_ExpScanner_INCLUDE_DIR}")
-  set_property(TARGET express APPEND PROPERTY INCLUDE_DIRECTORIES "${LEMON_ExpParser_INCLUDE_DIR}")
-  if (TARGET express-static)
-    set_property(TARGET express-static APPEND PROPERTY INCLUDE_DIRECTORIES "${PERPLEX_ExpScanner_static_INCLUDE_DIR}")
-    set_property(TARGET express-static APPEND PROPERTY INCLUDE_DIRECTORIES "${LEMON_ExpParser_static_INCLUDE_DIR}")
-  endif (TARGET express-static)
+  set_property(TARGET express
+               APPEND PROPERTY INCLUDE_DIRECTORIES "${RE2C_ExpScanner_INCLUDE_DIR}")
+  set_property(TARGET express
+               APPEND PROPERTY INCLUDE_DIRECTORIES "${LEMON_ExpParser_INCLUDE_DIR}")
 endif(SC_GENERATE_LP_SOURCES)
 
 if(SC_GENERATE_LP_SOURCES)
